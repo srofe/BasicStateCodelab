@@ -72,6 +72,35 @@ zero.
 
 To preserve the updated value of `count` Compose needs to `remember` the value.
 This can be done using the inline `remember` function:
-```Kotlin
+```kotlin
 val count: MutableState<Int> = remember { mutableStateOf(0) }
+```
+
+This syntax can be simplified using Kotlin's
+[delegated properties](https://kotlinlang.org/docs/delegated-properties.html).
+This uses the `by` keyword to define `count` as a variable. This also requires 
+importing the `getValue` amd `setValue` for the delegate:
+```kotlin
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+```
+Which has the advantage of being able to use `count` directly without explicitly 
+referring to it's `value` property:
+```kotlin
+@Composable
+fun WaterCounter(modifier: Modifier = Modifier) {
+    var count by remember { mutableStateOf(0) }
+
+    Column(modifier = modifier.padding(16.dp)) {
+        Text(
+            text = "You've had ${count} glasses.",
+        )
+        Button(
+            onClick = { count++ },
+            Modifier.padding(top = 8.dp)
+        ) {
+            Text("Add one")
+        }
+    }
+}
 ```
