@@ -58,3 +58,8 @@ set to each time the `WaterCounter` function is called).
 Also, Compose will not detect any change in the state of `count` because it has 
 not been asked to do so. So, tapping the button doesn't actually force any 
 recomposition.
+
+## Memory in a Composable Function
+In order to have Compose track the state of property, we need to use Compose's 
+`State` or `MutableState` types. This enables recomposition to be triggered 
+when a state components `value` changes. 
