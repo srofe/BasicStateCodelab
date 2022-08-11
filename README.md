@@ -27,3 +27,34 @@ fun WaterCounter(modifier: Modifier = Modifier) {
 This contains a static state value: `count`. Note that `count` will always be 
 zero each time `WaterCounter` is recomposed, and because it is a constant
 value - since it is a `val` not a `var` and cannot be changed. 
+
+## Events in Compose
+To enable `count` to be updated a `Button` composable is added to `WaterCounter`
+which increments `count` each time the button is tapped by implementing an 
+`onClick` event handler:
+```kotlin
+@Composable
+fun WaterCounter(modifier: Modifier = Modifier) {
+    var count = 0
+
+    Column(modifier = modifier.padding(16.dp)) {
+        Text(
+            text = "You've had $count glasses.",
+        )
+        Button(
+            onClick = { count++ },
+            Modifier.padding(top = 8.dp)
+        ) {
+            Text("Add one")
+        }
+    }
+}
+```
+When running the application and tapping the button the `count` that is 
+displayed does not change since (as noted above) each time `WaterCounter` is 
+recomposed, the value of `count` is set to zero (since this is the value it is 
+set to each time the `WaterCounter` function is called).
+
+Also, Compose will not detect any change in the state of `count` because it has 
+not been asked to do so. So, tapping the button doesn't actually force any 
+recomposition.
