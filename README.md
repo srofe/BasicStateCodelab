@@ -62,4 +62,16 @@ recomposition.
 ## Memory in a Composable Function
 In order to have Compose track the state of property, we need to use Compose's 
 `State` or `MutableState` types. This enables recomposition to be triggered 
-when a state components `value` changes. 
+when a state components `value` changes:
+```Kotlin
+val count: MutableState<Int> = mutableStateOf(0)
+```
+However, this still doesn't change the displayed value of `count` when the 
+button is tapped since the recomposition will just re-initialise `count` to 
+zero.
+
+To preserve the updated value of `count` Compose needs to `remember` the value.
+This can be done using the inline `remember` function:
+```Kotlin
+val count: MutableState<Int> = remember { mutableStateOf(0) }
+```
