@@ -92,15 +92,40 @@ fun WaterCounter(modifier: Modifier = Modifier) {
     var count by remember { mutableStateOf(0) }
 
     Column(modifier = modifier.padding(16.dp)) {
-        Text(
-            text = "You've had ${count} glasses.",
-        )
-        Button(
-            onClick = { count++ },
-            Modifier.padding(top = 8.dp)
-        ) {
+        Text("You've had ${count} glasses.")
+        Button(onClick = { count++ }, Modifier.padding(top = 8.dp)) {
             Text("Add one")
         }
     }
+}
+```
+
+## State Drive UI
+Recomposition cases the UI to be updated which may result in some composables 
+entering or leaving the composition. To illustrate this, the `count` parameter 
+can be used to hide or display the text showing the count of glasses of water:
+```kotlin
+@Composable
+fun WaterCounter(modifier: Modifier = Modifier) {
+    var count by remember { mutableStateOf(0) }
+
+    Column(modifier = modifier.padding(16.dp)) {
+        if (count > 0) {
+            Text("You've had ${count} glasses.")
+        }
+        Button(onClick = { count++ }, Modifier.padding(top = 8.dp)) {
+            Text("Add one")
+        }
+    }
+}
+```
+Here the text is displayed only if `count` is greater than zero.
+
+We can also change the state of the Button by linking the `enabled` parameter 
+to `count`. For example, to disable the button when the `count` is 10 or 
+greater, change the Button definition to:
+```kotlin
+Button(onClick = { count++ }, Modifier.padding(top = 8.dp), enabled = count < 10) {
+            Text("Add one")
 }
 ```
