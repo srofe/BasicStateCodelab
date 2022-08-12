@@ -173,3 +173,46 @@ fun WaterCounter(modifier: Modifier = Modifier) {
 ```
 Initially the task will be shown (when the `count` is greater than zero). Then 
 when the `Close` button is tapped for the task it will be hidden.
+
+Next, we add a button to clear the `count`:
+```kotlin
+@Composable
+fun WaterCounter(modifier: Modifier = Modifier) {
+    Column(modifier = modifier.padding(16.dp)) {
+        var count by remember { mutableStateOf(0) }
+        if (count > 0) {
+            var showTask by remember { mutableStateOf(true) }
+            if (showTask) {
+                WellnessTaskItem(
+                    onClose = { showTask = false },
+                    taskName = "Have you taken your 15 minute walk today?"
+                )
+            }
+            Text("You've had ${count} glasses.")
+        }
+        Row(Modifier.padding(top = 8.dp)) {
+            Button(onClick = { count++ }, enabled = count < 10) {
+                Text("Add one")
+            }
+            Button(onClick = { count = 0 }, Modifier.padding(start = 8.dp)) {
+                Text("Clear water count")
+            }
+        }
+    }
+}
+```
+Now, pressing the `Add one` button will increment `count` - which will show 
+the task item since `count` is greater than zero. Continuing to tap `Add one`
+will continue to increment `count` and the task will still be visible.
+
+Next, press the close/delete `X` for the item, and it will no longer be shown.
+Continuing to tap the `Add one` increments `count` and the task is still now 
+shown since `showTask` remains false.
+
+Next, press `Clear water count`. This clears `count` which removes all text
+since count is now zero. When clicking `Add one` the task is now shown again, 
+however, we expect it not to be displayed since we have not changed the value 
+of `showTask`. What happens in this case is that `showTask` is forgotten since 
+the location of the code where it is remembered is not invoked, so it is 
+re-initialised when `var showTask by remember { mutableStateOf(true) }` is 
+executed again.
