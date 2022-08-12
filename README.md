@@ -250,3 +250,24 @@ Now neither `count` or `showTask` will be forgotten as the location of their
 definition will be executed each time the `WaterCounter` function is called. 
 This is an example of **State Hoisting** - which will also be discussed further 
 below.
+
+## Restore State
+Loss of state can also occur for other reasons, such as when the device 
+orientation is changed. If we run the application, add some water to the 
+counter then rotate the device, the `Activity` is recreated and the state is 
+forgotten.
+
+While `remember` allows state to be retained across recompositions, it is not 
+retained across configuration changes (such as orientation changes). To save 
+state across configuration changes, use `rememberSaveable` instead of `remember`:
+```kotlin
+import androidx.compose.runtime.saveable.rememberSaveable
+
+@Composable
+fun WaterCounter(modifier: Modifier = Modifier) {
+        ...
+        var count by rememberSaveable { mutableStateOf(0) }
+        ...
+}
+```
+
