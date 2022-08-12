@@ -216,3 +216,37 @@ of `showTask`. What happens in this case is that `showTask` is forgotten since
 the location of the code where it is remembered is not invoked, so it is 
 re-initialised when `var showTask by remember { mutableStateOf(true) }` is 
 executed again.
+
+This can be corrected by lifting where the definition of state is to the top 
+of the `WaterCounter` function, like:
+```kotlin
+@Composable
+fun WaterCounter(modifier: Modifier = Modifier) {
+    var count by remember { mutableStateOf(0) }
+    var showTask by remember { mutableStateOf(true) }
+    
+    Column(modifier = modifier.padding(16.dp)) {
+        if (count > 0) {
+            if (showTask) {
+                WellnessTaskItem(
+                    onClose = { showTask = false },
+                    taskName = "Have you taken your 15 minute walk today?"
+                )
+            }
+            Text("You've had ${count} glasses.")
+        }
+        Row(Modifier.padding(top = 8.dp)) {
+            Button(onClick = { count++ }, enabled = count < 10) {
+                Text("Add one")
+            }
+            Button(onClick = { count = 0 }, Modifier.padding(start = 8.dp)) {
+                Text("Clear water count")
+            }
+        }
+    }
+}
+```
+Now neither `count` or `showTask` will be forgotten as the location of their 
+definition will be executed each time the `WaterCounter` function is called. 
+This is an example of **State Hoisting** - which will also be discussed further 
+below.

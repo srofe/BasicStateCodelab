@@ -15,10 +15,11 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun WaterCounter(modifier: Modifier = Modifier) {
+    var count by remember { mutableStateOf(0) }
+    var showTask by remember { mutableStateOf(true) }
+
     Column(modifier = modifier.padding(16.dp)) {
-        var count by remember { mutableStateOf(0) }
         if (count > 0) {
-            var showTask by remember { mutableStateOf(true) }
             if (showTask) {
                 WellnessTaskItem(
                     onClose = { showTask = false },
