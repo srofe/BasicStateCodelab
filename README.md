@@ -265,9 +265,48 @@ import androidx.compose.runtime.saveable.rememberSaveable
 
 @Composable
 fun WaterCounter(modifier: Modifier = Modifier) {
-        ...
-        var count by rememberSaveable { mutableStateOf(0) }
-        ...
+    ...
+    var count by rememberSaveable { mutableStateOf(0) }
+    ...
 }
 ```
 
+## State Hoisting
+Composables with internal state tend to be less reusable and harder to test. To
+overcome this, it is better to lift, or hoist, the state to a higher level 
+object. 
+
+The general way to create a stateless composable is to replace the state with 
+two parameters:
+* A `value` of type `T` which contains the current value to dsiplay.
+* An `onValueChange(T)-> Unit` event which is used to change `T` to a new value. 
+
+State hoisting also has other benefits:
+* **Single Source of Truth**: By moving state instead of duplicating it, there 
+ is only one source of truth.
+* **Shareable**: Hoisted state can be shared by multiple composables.
+* **Interceptable**: Callers to a stateless composable can decide to ignore or 
+  modify events before changing the state.
+* **Decoupled**: The state for a stateless composable can be stored anywhere -  
+ e.g., in a View Model.
+
+This can be done with our example as:
+```kotlin
+@Composable
+fun StatelessCounter(count: Int, onIncrement: () -> Unit, modifier: Modifier = Modifier) {
+    Column(modifier = modifier.padding(16.dp)) {
+        if (count > 0) {
+            Text("You've had $count glasses.")
+        }
+        Button(onClick = onIncrement, Modifier.padding(top = 8.dp), enabled = count < 10) {
+            Text("Add one")
+        }
+    }
+}
+
+@Composable
+fun WaterCounter(modifier: Modifier = Modifier) {
+    var count by rememberSaveable { mutableStateOf(0) }
+    StatelessCounter(count, { count++ }, modifier)
+}
+```
